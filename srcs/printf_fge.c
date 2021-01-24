@@ -7,6 +7,7 @@
 #include "printf_fge_internal.h"
 
 SGlobal			g_info;
+void			*g_tmp;
 
 static void		printAccordingConversionInfo(SConversion *conversion_info)
 {

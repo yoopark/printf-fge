@@ -58,6 +58,8 @@ typedef struct		_SGlobal
 
 extern SGlobal		g_info;
 
+extern void			*g_tmp;
+
 bool		_isdigit(char c);
 void		*_memset(void *p, char c, size_t n);
 void		_bzero(void *p, size_t n);

@@ -11,7 +11,7 @@
 
 int		main(void)
 {
-	printf_fge("%020fhello\n", 42.4242);
-	printf("%020fhello\n", 42.4242);
+	printf_fge("%020.100fhello\n", 12.345f);
+	printf("%020.100fhello\n", 12.345f);
 	return 0;
 }

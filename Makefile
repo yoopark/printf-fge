@@ -34,7 +34,7 @@ FILES		= 	convert/decimal2e \
 				convert/decimal2f \
 				convert/f2fb \
 				convert/fb2struct \
-				conver/struct2decimal \
+				convert/struct2decimal \
 				print_including_spaces \
 				print_specifier \
 				printf_fge \

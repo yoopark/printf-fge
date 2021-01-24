@@ -8,5 +8,7 @@
 
 char		*decimal2e(SConversion *conversion_info, char *decimal)
 {
-
+	(void)conversion_info;
+	printf("%s\n", decimal);
+	return _strdup("");
 }

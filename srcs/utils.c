@@ -51,7 +51,7 @@ void		*_calloc(size_t n, size_t per)
 	p = malloc(n * per);
 	if (!p)
 		return (NULL);
-	_bzero(p, sizeof p);
+	_bzero(p, n * per);
 	return p;
 }
 
