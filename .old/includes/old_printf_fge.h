@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_specifier_e.c                                :+:      :+:    :+:   */
+/*   printf_fge.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yopark <yopark@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/18 03:56:28 by yopark            #+#    #+#             */
-/*   Updated: 2021/01/18 03:56:28 by yopark           ###   ########.fr       */
+/*   Created: 2021/01/17 07:58:05 by yopark            #+#    #+#             */
+/*   Updated: 2021/01/17 07:58:05 by yopark           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf_fge_internal.h"
+#ifndef PRINTF_FGE_H
+# define PRINTF_FGE_H
 
-void		print_specifier_e(t_conversion_info *conversion_info_ptr, float_bits fb)
-{
-	printf("%f\n", fb2f(fb));
-}
+# ifndef FLOAT_BITS
+#  define FLOAT_BITS
+
+typedef unsigned	float_bits;
+
+float_bits		f2fb(float f);
+float			fb2f(float_bits fb);
+
+# endif
+
+int			printf_fge(const char *format, ... );
+
+#endif

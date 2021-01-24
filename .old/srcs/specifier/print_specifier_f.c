@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf_fge_internal.h"
+#include "old_printf_fge_internal.h"
 
 float_bits	get_power_10(int n)
 {
@@ -27,7 +27,7 @@ float_bits	get_power_10(int n)
 void		print_specifier_f(t_conversion_info *conversion_info_ptr, float_bits fb)
 {
 	float_bits result = multiply_float_bits(fb, get_power_10(conversion_info_ptr->precision));
-	t_float st = fb2struct(result);
+	t_float st = fb2struct(fb);
 	t_bigint *bi = struct2bigint(st);
 	char *s = bigint2str(bi);
 	printf("%s\n", s);

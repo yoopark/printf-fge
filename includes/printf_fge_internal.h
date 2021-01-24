@@ -1,14 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.h                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yopark <yopark@student.42seoul.kr>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/17 08:03:12 by yopark            #+#    #+#             */
-/*   Updated: 2021/01/17 08:03:12 by yopark           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/*
+**	Yongjun Park
+**	Created	2021. 1. 23.
+**	printf_fge_internal.h
+*/
 
 #ifndef PRINTF_FGE_INTERNAL_H
 # define PRINTF_FGE_INTERNAL_H
@@ -16,111 +10,98 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdarg.h>
+# include <stdbool.h>
 
-# include <stdio.h> // for debugging
+# include <stdio.h>				// for testing
 
-# define TRUE		1
-# define FALSE		0
-
-# define BIAS		0x7f
-
-extern size_t		g_return_value;
-
-# ifndef FLOAT_BITS
-#  define FLOAT_BITS
+# define BIAS		0x7F		// 2^8 - 1
 
 typedef unsigned	float_bits;
 
-float_bits		f2fb(float f);
-float			fb2f(float_bits fb);
+/*
+** Naming printf() format
+**
+** ex) printf("%+10.2f Points\n", 0.1234);
+**		%+-10.2f Points\n	=> format
+**		%+-10.2f			=> conversion_str
+** 	 	+					=> sign_flag
+**		-					=> alignment_flag
+**		10					=> width
+** 		2					=> precision
+**		f					=> specifier
+*/
 
-# endif
-
-typedef unsigned char			byte;
-typedef unsigned char			*byte_pointer;
-typedef const unsigned char		*const_byte_pointer;
-typedef int						t_bool; // I will use TRUE/FALSE in this return_type.
-
-/*	printf 요소 분석
-	기준 : printf("The rate is %+10.2f\n", 0.1234);
-
-	The rate is %+10.2f\n	-> format string(format_str)
-	%+10.2f					-> conversion string(conversion_str)
-	+						-> flag(flag)
-	10						-> field minimum width(min_width)
-	2						-> precision(precision)
-	f						-> conversion specifier(specifier)
-
-	출처 : https://linux.die.net/man/3/printf */
-
-typedef struct			s_conversion_info
+typedef struct		_SConversion
 {
-	char				flag_sign;
-	char				flag_alignment;
-	int					min_width;
-	t_bool				have_min_width;
-	int					precision;
-	t_bool				have_precision;
-	char				specifier;
-}						t_conversion_info;
+	char			sign_flag;
+	char			alignment_flag;
+	// bool			have_width;
+	bool			have_precision;
+	int				width;
+	int				precision;
+	char			specifier;
+}					SConversion;
 
-typedef struct			s_float
+typedef struct		_SFloat
 {
-	unsigned			sign;
-	unsigned			exponent;
-	unsigned			fraction;
-}						t_float;
+	bool			sign;
+	unsigned		exponent;
+	unsigned		fraction;
+}					SFloat;
 
-typedef struct			s_bigint
+typedef struct		_SGlobal
 {
-	t_bool				sign;
-	unsigned			*arr;
-	size_t				len;
-}						t_bigint;
+	int				return_val;
+	bool			is_error;
+	va_list			arg_ptr;
+}					SGlobal;
 
-void			set_conversion_info(t_conversion_info *conversion_info_ptr, \
-										const char *str, va_list argument_ptr);
+extern SGlobal		g_info;
 
-void			print_specifier_f(t_conversion_info *conversion_info_ptr, float_bits fb);
-void			print_specifier_g(t_conversion_info *conversion_info_ptr, float_bits fb);
-void			print_specifier_e(t_conversion_info *conversion_info_ptr, float_bits fb);
+bool		_isdigit(char c);
+void		*_memset(void *p, char c, size_t n);
+void		_bzero(void *p, size_t n);
+size_t		_strlen(const char *s);
+void		_putchar(const char c);
+void		_putstr(const char *s);
+void		*_calloc(size_t n, size_t per);
+size_t		_strlen_to_charset(const char *s, const char *charset);
+void		_putstr_with_len(const char *s, size_t len);
+char		*_strchr(const char *s, char c);
+unsigned	MASK(int n);
+char		*_strncpy(char *dst, const char *src, size_t n);
+char		*_strcpy(char *dst, const char *src);
+char		*_strndup(const char *s, size_t n);
+char		*_strdup(const char *s);
+void		*_memmove(void *dst, const void *src, size_t n);
+int			_strncmp(const char *s1, const char *s2, size_t n);
+int			_strcmp(const char *s1, const char *s2);
+size_t		_max_size(size_t x, size_t y);
+size_t		_min_size(size_t x, size_t y);
+size_t		_max(int x, int y);
+size_t		_min(int x, int y);
+char		*_strjoin(const char *s1, const char *s2);
+char		*_strjoin3(const char *s1, const char *s2, const char *s3);
+char		**_split(const char *s, char c);
+char		_to_nbr(char c);
+char		_to_digit(char c);
+char		*_ltrim(char *s, char c);
 
-/* functions in utils.c */
-t_bool			ft_isdigit(char c);
-void			ft_bzero(void *ptr, size_t n);
-size_t			ft_strlen_to_char(const char *str, char c);
-void			ft_putstr_with_len(const char *str, size_t len);
-void			ft_putchar(const char c);
-void			*ft_calloc(size_t cnt, size_t per);
-unsigned		*ft_unsigneddup(unsigned *arr, size_t len);
+float_bits	f2fb(float f);
+float		fb2f(float_bits fb);
+float_bits	struct2fb(SFloat sf);
+SFloat		fb2struct(float_bits fb);
+char		*struct2decimal(SFloat *sf);
+char		*decimal2e(SConversion *conversion_info, char *decimal);
+char		*decimal2f(SConversion *conversion_info, char *decimal);
 
-t_float			fb2struct(float_bits fb);
-float_bits		struct2fb(t_float float_struct);
+void		setConversionInfo(SConversion *conversion_info, const char *s, size_t len);
+void		printSpecifierF(SConversion *conversion_info, char *decimal);
+void		printSpecifierG(SConversion *conversion_info, char *decimal);
+void		printSpecifierE(SConversion *conversion_info, char *decimal);
+void		printIncludingSpaces(char *sign, const char *s, SConversion *conversion_info);
 
-u_int32_t		add_binary(u_int32_t u1, u_int32_t u2);
-u_int64_t		add_binary64(u_int64_t u1, u_int64_t u2);
-u_int32_t		subtract_binary(u_int32_t u1, u_int32_t u2);
-u_int64_t		subtract_binary64(u_int64_t u1, u_int64_t u2);
-u_int64_t		multiply_binary(u_int32_t u1, u_int32_t u2);
-u_int64_t		divide_binary64(u_int64_t dividend, u_int64_t divisor);
-u_int32_t		round_to_even_binary(u_int32_t u, unsigned bits);
-u_int64_t		round_to_even_binary64(u_int64_t u, unsigned bits);
-float_bits		multiply_float_bits(float_bits fb1, float_bits fb2);
-unsigned		calculate_digit(u_int32_t u);
-unsigned		calculate_digit64(u_int64_t u);
-
-t_bigint		*create_bigint(t_bool sign, unsigned *arr, size_t len);
-t_bigint		*right_shift_bigint(t_bigint *bi, unsigned n);
-t_bigint		*left_shift_bigint(t_bigint *bi, unsigned n);
-byte			extract_bit_from_unsigned(unsigned u, unsigned n);
-int				ft_bigint_cmp(t_bigint *bi1, t_bigint *bi2);
-t_bigint		*subtract_bigint(t_bigint *bi1, t_bigint *bi2);
-t_bigint		*truncate_bigint(t_bigint *bi);
-
-t_bigint		*struct2bigint(t_float float_struct);
-t_float			bigint2struct(t_bigint *bi);
-char			*bigint2str(t_bigint *bi);
-
-void	show_bigint(t_bigint *bi);
+char		*multiplyHalf(char *s); // 이후 수정
+char		*add(char *s1, char *s2); // 이후 수정
 
 #endif

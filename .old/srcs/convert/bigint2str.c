@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf_fge_internal.h"
+#include "old_printf_fge_internal.h"
 
 // 리턴값은 몫, bi->arr에는 나머지가 들어간다. 들어올 때 bi가 0이면 return (-1);
 static t_bigint		*divide_bigint_ten(t_bigint *bi)

@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include "printf_fge.h"
+#include "old_printf_fge.h"
 
-#include "printf_fge_internal.h"
+#include "old_printf_fge_internal.h"
 
 /* main_for_test.c
 	2^32개의 float_bits 값 모두에 대하여,
@@ -54,7 +54,7 @@ void	show_bigint(t_bigint *bi)
 int		main(void)
 {
 
-	printf("%.30f\n", 25.25f);
-	printf_fge("%.30f\n", 25.25f);
+	// printf("%.30f\n", 10.25f);
+	printf_fge("%.30f\n", 42.42f);
 	return (0);
 }

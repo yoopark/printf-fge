@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf_fge_internal.h" // calculate 전용 header를 만들자
+#include "old_printf_fge_internal.h"
 
 static byte		add_bit(byte b1, byte b2, t_bool is_carried)
 {

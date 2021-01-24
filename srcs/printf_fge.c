@@ -1,127 +1,62 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   printf_fge.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yopark <yopark@student.42seoul.kr>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/17 07:57:38 by yopark            #+#    #+#             */
-/*   Updated: 2021/01/17 07:57:38 by yopark           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/*
+**	Yongjun Park
+**	Created	2021. 1. 23.
+**	printf_fge.c
+*/
 
 #include "printf_fge_internal.h"
 
-size_t				g_return_value;
+SGlobal			g_info;
 
-static size_t		get_conversion_str_len(const char *str)
+static void		printAccordingConversionInfo(SConversion *conversion_info)
 {
-	for (size_t return_value = 1 ; str[return_value] != '\0' ; ++return_value)
-	{
-		if (str[return_value] == 'f' \
-				|| str[return_value] == 'g' \
-				|| str[return_value] == 'e' \
-				|| (return_value == 1 && str[return_value] == '%'))
-			return (++return_value);
+	float_bits		fb;
+	SFloat			sf;
+	char			*decimal;
+
+	if (conversion_info->specifier != '%') {
+		fb = f2fb((float)va_arg(g_info.arg_ptr, double));
+		sf = fb2struct(fb);
+		decimal = struct2decimal(&sf);
 	}
-	return (0);
-}
-
-static t_bool		is_valid_conversion_str(const char *str, size_t len)
-{
-	size_t		idx;
-
-	idx = 1;
-	while (str[idx] == ' ' || str[idx] == '+' || str[idx] == '0' || str[idx] == '-')
-		++idx;
-	if (str[idx] == '*')
-		++idx;
-	else
-	{
-		while (ft_isdigit(str[idx]))
-			++idx;
-	}
-	if (str[idx] == '.')
-	{
-		++idx;
-		if (str[idx] == '*')
-			++idx;
-		else
-		{
-			while (ft_isdigit(str[idx]))
-				++idx;
-		}
-	}
-	if (++idx != len)
-		return (FALSE);
-	return (TRUE);
-}
-
-static void			print_using_conversion_info(t_conversion_info *conversion_info_ptr, \
-													va_list argument_ptr)
-{
-	// printf("flag_sign: %c\n", conversion_info_ptr->flag_sign);
-	// printf("flag_alignment: %c\n", conversion_info_ptr->flag_alignment);
-	// printf("min_width: %d\n", conversion_info_ptr->min_width);
-	// printf("precision: %d\n", conversion_info_ptr->precision);
-	// printf("specifier: %c\n", conversion_info_ptr->specifier);
-
-	switch (conversion_info_ptr->specifier)
-	{
+	switch (conversion_info->specifier) {
 		case 'f':
-			print_specifier_f(conversion_info_ptr, f2fb(va_arg(argument_ptr, double)));
+			printSpecifierF(conversion_info, decimal);
 			break ;
-			/* warning: ‘float’ is promoted to ‘double’ when passed through ‘...’
-				(so you should pass 'doubld' not 'float' to 'va_arg') 
-				%f라고 해도 printf에서는 double로 인식하기 때문에 정확도 차이가 발생할 수 있다는 점에 주의! */
 		case 'g':
-			print_specifier_g(conversion_info_ptr, f2fb(va_arg(argument_ptr, double)));
+			printSpecifierG(conversion_info, decimal);
 			break ;
 		case 'e':
-			print_specifier_e(conversion_info_ptr, f2fb(va_arg(argument_ptr, double)));
+			printSpecifierE(conversion_info, decimal);
 			break ;
 		default:
-			ft_putchar('%');
+			_putchar('%');
 	}
 }
 
-int					printf_fge(const char *format, ... )
+int				printf_fge(const char *format, ...)
 {
-	size_t				format_idx;
-	size_t				len_to_next_format_idx;
-	t_conversion_info	conversion_info;
-	va_list				argument_ptr;
+	size_t			idx = 0;
+	size_t			len_to_next_idx;
+	SConversion		conversion_info;
 
-	format_idx = 0;
-	g_return_value = 0;
-	va_start(argument_ptr, format);
-	while (format[format_idx] != '\0')
-	{
-		if (format[format_idx] == '%')
-		{
-			if ((len_to_next_format_idx = get_conversion_str_len(format + format_idx)) == 0)
-			{
-				va_end(argument_ptr);
-				return (-1);
-			}
-			if (!is_valid_conversion_str(format + format_idx, len_to_next_format_idx))
-			{
-				va_end(argument_ptr);
-				return (-1);
-			}
-			ft_bzero(&conversion_info, sizeof(conversion_info));
-			set_conversion_info(&conversion_info, format + format_idx, argument_ptr);
-			print_using_conversion_info(&conversion_info, argument_ptr);
+	_bzero(&g_info, sizeof(SGlobal));
+	va_start(g_info.arg_ptr, format);
+	while (format[idx] != '\0') {
+		if (format[idx] == '%') {
+			++idx;
+			_bzero(&conversion_info, sizeof(SConversion));
+			len_to_next_idx = _strlen_to_charset(format + idx, "fge%") + 1;
+			setConversionInfo(&conversion_info, format + idx, len_to_next_idx);
+			if (g_info.is_error)
+				return -1;
+			printAccordingConversionInfo(&conversion_info);
+		} else {
+			len_to_next_idx = _strlen_to_charset(format + idx, "%");
+			_putstr_with_len(format + idx, len_to_next_idx);
 		}
-		else
-		{
-			len_to_next_format_idx = ft_strlen_to_char(format + format_idx, '%');
-			ft_putstr_with_len(format + format_idx, len_to_next_format_idx);
-		}
-		format_idx += len_to_next_format_idx;
+		idx += len_to_next_idx;
 	}
-	va_end(argument_ptr);
-	if (g_return_value > __INT32_MAX__)
-		return (-1);
-	return ((int)g_return_value);
+	va_end(g_info.arg_ptr);
+	return g_info.return_val;
 }

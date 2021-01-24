@@ -1,28 +1,25 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   fb2struct.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yopark <yopark@student.42seoul.kr>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/01/19 18:33:47 by yopark            #+#    #+#             */
-/*   Updated: 2021/01/19 18:33:47 by yopark           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/*
+**	Yongjun Park
+**	Created	2021. 1. 23.
+**	fb2struct.c
+*/
 
 #include "printf_fge_internal.h"
 
-t_float		fb2struct(float_bits fb)
+SFloat		fb2struct(float_bits fb)
 {
-	t_float		return_value; // 얘는 왜 malloc으로 안해?
+	SFloat		sf;
 
-	return_value.sign = fb >> 31;
-	return_value.exponent = fb >> 23 & 0xFF;
-	return_value.fraction = fb & 0x7FFFFF;
-	return (return_value);
+	sf.sign = (bool)(fb >> 31);
+	sf.exponent = (fb >> 23) & MASK(8);
+	sf.fraction = fb & MASK(23);
+	return sf;
 }
 
-float_bits	struct2fb(t_float float_struct)
+float_bits	struct2fb(SFloat sf)
 {
-	return ((float_struct.sign << 31) | (float_struct.exponent << 23) | float_struct.fraction);
+	return (	((float_bits)sf.sign << 31) | 
+				((sf.exponent & MASK(8)) << 23) | 
+				(sf.fraction & MASK(23))
+			);
 }
