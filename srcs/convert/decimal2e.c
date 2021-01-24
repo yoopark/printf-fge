@@ -8,6 +8,7 @@
 
 char		*decimal2e(SConversion *conversion_info, char *decimal)
 {
+	char		*return_str;
 	bool		sign = false;
 
 	if (decimal[0] == '-') {
@@ -17,6 +18,14 @@ char		*decimal2e(SConversion *conversion_info, char *decimal)
 		free(g_tmp);
 	}
 
+	/* code */
 
-	return _strdup("");
+	if (sign) {
+		g_tmp = return_str;
+		return_str = _strjoin("-", return_str);
+		if (!return_str)
+			return NULL;
+		free(g_tmp);
+	}
+	return return_str;
 }
