@@ -20,13 +20,13 @@ static char		*getUntilFraction(unsigned fraction)
 	unit = _strdup("");
 	return_str = _strdup("");
 	for (unsigned i = 23 - 1 ; i != (unsigned)-1 ; --i) {
-		g_tmp = unit;
+		char *_tmp = unit;
 		unit = multiplyDecimalPointStr(unit, 5);
-		free(g_tmp);
+		free(_tmp);
 		if (getBitFromUnsigned(fraction, i)) {
-			g_tmp = return_str;
+			_tmp = return_str;
 			return_str = addDecimalPointStr(return_str, unit);
-			free(g_tmp);
+			free(_tmp);
 		}
 	}
 	if (_strcmp(return_str, "") == 0) {
@@ -43,7 +43,7 @@ static char		*getUntilExponent(char *s, unsigned exponent)
 {
 	char		**map;
 
-	g_tmp = s;
+	char *_tmp = s;
 	if (exponent == 0) { // denormalization
 		exponent = 1;
 		if (!(s = _strjoin("0.", s)))
@@ -52,33 +52,33 @@ static char		*getUntilExponent(char *s, unsigned exponent)
 		if (!(s = _strjoin("1.", s)))
 			return NULL;
 	}
-	free(g_tmp);
+	free(_tmp);
 
 	if (exponent > BIAS) {
 		for (unsigned _ = 0 ; _ < exponent - BIAS ; ++_) {
-			g_tmp = s;
+			_tmp = s;
 			s = multiplyEntireDecimalStr(s, 2);
-			free(g_tmp);
+			free(_tmp);
 		}
 	} else {
 		for (unsigned _ = 0 ; _ < BIAS - exponent ; ++_) {
 			if (!(map = _split(s, '.')))
 				return NULL;
-			g_tmp = map[1];
+			_tmp = map[1];
 			map[1] = multiplyDecimalPointStr(map[1], 5);
-			free(g_tmp);
+			free(_tmp);
 			if (_strcmp(map[0], "1") == 0) {
 				free(map[0]);
 				if (!(map[0] = _strdup("0")))
 					return NULL;
-				g_tmp = map[1];
+				_tmp = map[1];
 				map[1] = addDecimalPointStr(map[1], "5");
-				free(g_tmp);
+				free(_tmp);
 			}
-			g_tmp = s;
+			_tmp = s;
 			if (!(s = _strjoin3(map[0], ".", map[1])))
 				return NULL;
-			free(g_tmp);
+			free(_tmp);
 			free(map[0]);
 			free(map[1]);
 			free(map);
@@ -91,20 +91,20 @@ char			*struct2decimal(SFloat *sf)
 {
 	char		*until_fraction;
 	char		*until_exponent;
-	char		*until_sign;
+	// char		*until_sign;
 
 	until_fraction = getUntilFraction(sf->fraction);
 	until_exponent = getUntilExponent(until_fraction, sf->exponent);
-	if (sf->sign) {
-		if (!(until_sign = _strjoin("-", until_exponent)))
-			return NULL;
-	} else {
-		if (!(until_sign = _strdup(until_exponent)))
-			return NULL;
-	}
+	// if (sf->sign) {
+	// 	if (!(until_sign = _strjoin("-", until_exponent)))
+	// 		return NULL;
+	// } else {
+	// 	if (!(until_sign = _strdup(until_exponent)))
+	// 		return NULL;
+	// }
 	// free(until_fraction);	Why error occurs?
-	free(until_exponent);
-	return until_sign;
+	// free(until_exponent);
+	return until_exponent;
 }
 
 static bool		getBitFromUnsigned(unsigned u, unsigned n)
@@ -183,10 +183,10 @@ static char		*multiplyEntireDecimalStr(const char *s, int n)
 	}
 	return_str[0] = _to_digit((char)carry);
 	if (return_str[0] == '0') {
-		g_tmp = return_str;
+		char *tmp = return_str;
 		if (!(return_str = _strdup(return_str + 1)))
 			return NULL;
-		// free(g_tmp);		Why error occurs?
+		 free(tmp);
 	}
 	return return_str;
 }

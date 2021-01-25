@@ -32,6 +32,7 @@ LIBPRINTF	=	fge
 
 FILES		= 	convert/decimal2e \
 				convert/decimal2f \
+				convert/decimal2g \
 				convert/f2fb \
 				convert/fb2struct \
 				convert/struct2decimal \

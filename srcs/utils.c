@@ -271,3 +271,25 @@ char		*_ltrim(char *s, char c)
 		return NULL;
 	return return_str;
 }
+
+char		*_rtrim(char *s, char c)
+{
+	char		*return_str;
+	size_t		end = _strlen(s) - 1;
+
+	while (s[end] == c)
+		--end;
+	return_str = _strndup(s, end + 1);
+	if (!return_str)
+		return NULL;
+	return return_str;
+}
+
+void		_swap_char(char *x, char *y)
+{
+	char		tmp;
+
+	tmp = *x;
+	*x = *y;
+	*y = tmp;
+}

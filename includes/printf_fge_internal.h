@@ -12,8 +12,6 @@
 # include <stdarg.h>
 # include <stdbool.h>
 
-# include <stdio.h>				// for testing
-
 # define BIAS		0x7F		// 2^8 - 1
 
 typedef unsigned	float_bits;
@@ -58,8 +56,6 @@ typedef struct		_SGlobal
 
 extern SGlobal		g_info;
 
-extern void			*g_tmp;
-
 bool		_isdigit(char c);
 void		*_memset(void *p, char c, size_t n);
 void		_bzero(void *p, size_t n);
@@ -88,22 +84,20 @@ char		**_split(const char *s, char c);
 char		_to_nbr(char c);
 char		_to_digit(char c);
 char		*_ltrim(char *s, char c);
+char		*_rtrim(char *s, char c);
+void		_swap_char(char *x, char *y);
 
 float_bits	f2fb(float f);
 float		fb2f(float_bits fb);
 float_bits	struct2fb(SFloat sf);
 SFloat		fb2struct(float_bits fb);
 char		*struct2decimal(SFloat *sf);
-char		*decimal2e(SConversion *conversion_info, char *decimal);
-char		*decimal2f(SConversion *conversion_info, char *decimal);
+char		*decimal2e(SConversion *conversion_info, bool sign, char *decimal);
+char		*decimal2f(SConversion *conversion_info, bool sign, char *decimal);
+char		*decimal2g(SConversion *conversion_info, bool sign, char *decimal);
 
 void		setConversionInfo(SConversion *conversion_info, const char *s, size_t len);
-void		printSpecifierF(SConversion *conversion_info, char *decimal);
-void		printSpecifierG(SConversion *conversion_info, char *decimal);
-void		printSpecifierE(SConversion *conversion_info, char *decimal);
+void		printSpecifier(char type, SConversion *conversion_info, bool sign, char *decimal);
 void		printIncludingSpaces(char *sign, const char *s, SConversion *conversion_info);
-
-char		*multiplyHalf(char *s); // 이후 수정
-char		*add(char *s1, char *s2); // 이후 수정
 
 #endif

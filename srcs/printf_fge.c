@@ -7,7 +7,6 @@
 #include "printf_fge_internal.h"
 
 SGlobal			g_info;
-void			*g_tmp;
 
 static void		printAccordingConversionInfo(SConversion *conversion_info)
 {
@@ -22,13 +21,13 @@ static void		printAccordingConversionInfo(SConversion *conversion_info)
 	}
 	switch (conversion_info->specifier) {
 		case 'f':
-			printSpecifierF(conversion_info, decimal);
+			printSpecifier('f', conversion_info, sf.sign, decimal);
 			break ;
 		case 'g':
-			printSpecifierG(conversion_info, decimal);
+			printSpecifier('g', conversion_info, sf.sign, decimal);
 			break ;
 		case 'e':
-			printSpecifierE(conversion_info, decimal);
+			printSpecifier('e', conversion_info, sf.sign, decimal);
 			break ;
 		default:
 			_putchar('%');
